@@ -2,7 +2,7 @@ package com.example.movielibrary.controllers;
 
 import com.example.movielibrary.models.dtos.RegisterUserDto;
 import com.example.movielibrary.models.dtos.ResponseUserDto;
-import com.example.movielibrary.models.user.User;
+import com.example.movielibrary.models.user.ApplicationUser;
 import com.example.movielibrary.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class UserRestController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseUserDto register(@Valid @RequestBody RegisterUserDto registerUserDto){
-        User user = userService.register(registerUserDto);
-        return new ResponseUserDto(user.getId(), user.getUsername(), user.getRole());
+        ApplicationUser applicationUser = userService.register(registerUserDto);
+        return new ResponseUserDto(applicationUser.getId(), applicationUser.getUsername(), applicationUser.getRole());
     }
 }
