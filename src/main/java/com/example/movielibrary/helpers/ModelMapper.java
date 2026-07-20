@@ -1,6 +1,6 @@
 package com.example.movielibrary.helpers;
 
-import com.example.movielibrary.models.dtos.RegisterUserDto;
+import com.example.movielibrary.models.user.userDtos.RegisterUserDto;
 import com.example.movielibrary.models.user.Role;
 import com.example.movielibrary.models.user.ApplicationUser;
 import org.springframework.stereotype.Component;

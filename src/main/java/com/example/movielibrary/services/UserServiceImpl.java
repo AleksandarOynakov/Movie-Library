@@ -2,7 +2,7 @@ package com.example.movielibrary.services;
 
 import com.example.movielibrary.exceptions.DuplicateEntityException;
 import com.example.movielibrary.helpers.ModelMapper;
-import com.example.movielibrary.models.dtos.RegisterUserDto;
+import com.example.movielibrary.models.user.userDtos.RegisterUserDto;
 import com.example.movielibrary.models.user.ApplicationUser;
 import com.example.movielibrary.repositories.UserRepository;
 import org.jspecify.annotations.NullMarked;
