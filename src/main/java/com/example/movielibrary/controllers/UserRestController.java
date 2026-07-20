@@ -1,7 +1,7 @@
 package com.example.movielibrary.controllers;
 
-import com.example.movielibrary.models.dtos.RegisterUserDto;
-import com.example.movielibrary.models.dtos.ResponseUserDto;
+import com.example.movielibrary.models.user.userDtos.RegisterUserDto;
+import com.example.movielibrary.models.user.userDtos.ResponseUserDto;
 import com.example.movielibrary.models.user.ApplicationUser;
 import com.example.movielibrary.services.UserService;
 import jakarta.validation.Valid;

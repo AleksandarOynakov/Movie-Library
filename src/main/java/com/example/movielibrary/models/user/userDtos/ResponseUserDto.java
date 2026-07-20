@@ -1,4 +1,4 @@
-package com.example.movielibrary.models.dtos;
+package com.example.movielibrary.models.user.userDtos;
 
 import com.example.movielibrary.models.user.Role;
 
