@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
@@ -20,6 +20,7 @@ public class UserServiceImpl {
         this.modelMapper = modelMapper;
     }
 
+    @Override
     public User register(RegisterUserDto registerUserDto){
         if(userRepository.existsByUsername(registerUserDto.getUsername())){
             throw new DuplicateEntityException("Username already exists!");
