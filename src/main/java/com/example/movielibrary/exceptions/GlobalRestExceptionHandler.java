@@ -14,11 +14,4 @@ public class GlobalRestExceptionHandler {
     public String duplicateEntityExceptionHandler(DuplicateEntityException e){
         return e.getMessage();
     }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String usernameNotFoundExceptionHandler(UsernameNotFoundException e){
-        return e.getMessage();
-    }
-
 }
