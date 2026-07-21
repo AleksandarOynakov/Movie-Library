@@ -16,11 +16,17 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
     private final ModelMapper modelMapper;
+    private final RatingEnrichmentService enrichmentService;
 
     @Autowired
-    public MovieServiceImpl(MovieRepository movieRepository, ModelMapper modelMapper) {
+    public MovieServiceImpl(
+                            MovieRepository movieRepository,
+                            ModelMapper modelMapper,
+                            RatingEnrichmentService ratingEnrichmentService
+    ) {
         this.movieRepository = movieRepository;
         this.modelMapper = modelMapper;
+        this.enrichmentService = ratingEnrichmentService;
     }
 
     @Override
@@ -36,8 +42,10 @@ public class MovieServiceImpl implements MovieService {
         if(movieRepository.existsByTitleIgnoreCase(title)){
             throw new DuplicateEntityException(String.format("Movie with title %s already exists!", movie.getTitle()));
         }
-        //Will possible add enrichment here
-        return movieRepository.save(movie);
+
+        Movie savedMovie = movieRepository.save(movie);
+        enrichmentService.enrichRating(savedMovie.getId(),savedMovie.getTitle(),savedMovie.getYear());
+        return savedMovie;
     }
 
     @Override
