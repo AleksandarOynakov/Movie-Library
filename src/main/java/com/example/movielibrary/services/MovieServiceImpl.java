@@ -31,8 +31,9 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie create(CreateMovieDto createMovieDto) {
         Movie movie = modelMapper.fromDtoToObject(createMovieDto);
+        String title = movie.getTitle().trim();
 
-        if(movieRepository.existsByTitleIgnoreCase(movie.getTitle())){
+        if(movieRepository.existsByTitleIgnoreCase(title)){
             throw new DuplicateEntityException(String.format("Movie with title %s already exists!", movie.getTitle()));
         }
         //Will possible add enrichment here
