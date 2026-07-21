@@ -32,18 +32,9 @@ public class ModelMapper {
         if(updateMovieDto.getTitle() != null){
             movie.setTitle(updateMovieDto.getTitle());
         }
-
-        if(updateMovieDto.getDirector() != null){
             movie.setDirector(updateMovieDto.getDirector());
-        }
-
-        if(updateMovieDto.getYear() != null){
             movie.setYear(updateMovieDto.getYear());
-        }
-
-        if(updateMovieDto.getRating() != null){
             movie.setRating(updateMovieDto.getRating());
-        }
         return movie;
     }
 }

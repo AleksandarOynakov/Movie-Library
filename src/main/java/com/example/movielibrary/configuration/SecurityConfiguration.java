@@ -37,6 +37,20 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
 
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((req, res, e) -> {
+                            res.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            res.setContentType("text/plain");
+                            res.getWriter().write("You must be logged in to access this resource.");
+                        })
+
+                        .accessDeniedHandler((req, res, e) -> {
+                            res.setStatus(HttpStatus.FORBIDDEN.value());
+                            res.setContentType("text/plain");
+                            res.getWriter().write("You must be ADMIN to access this resource.");
+                        })
+                )
+
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/auth/login")
                         .successHandler((req, res, auth) -> {
