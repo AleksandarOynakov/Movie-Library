@@ -7,8 +7,7 @@ public record OmdbResponseDto(
         @JsonProperty("Director") String director,
         @JsonProperty("Year") String year,
         @JsonProperty("imdbRating") String imdbRating,
-        @JsonProperty("Response") String response,
-        @JsonProperty("Error") String error
+        @JsonProperty("Response") String response
 ) {
     public boolean wasFound() {
         String trueResponse = "True";
