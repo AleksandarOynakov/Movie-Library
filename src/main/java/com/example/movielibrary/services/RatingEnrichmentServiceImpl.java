@@ -28,11 +28,14 @@ public class RatingEnrichmentServiceImpl implements RatingEnrichmentService {
         try {
             OmdbResponseDto responseDto = omdbClient.findMovie(title, year);
             if (responseDto == null || !responseDto.wasFound()) {
-                logger.warn("OMDb didn't find movie {} ({})", title, year);
+                logger.warn("OMDb didn't find movie {} ({}), error: {}", title, year, responseDto.error());
                 return;
             }
 
             String rating = responseDto.imdbRating();
+            String director = responseDto.director();
+            String yearFromResponse = responseDto.year();
+
             if (rating == null || rating.equalsIgnoreCase("N/A")) {
                 logger.warn("OMDb didn't return rating for movie {} ({})", title, year);
                 return;
@@ -42,9 +45,20 @@ public class RatingEnrichmentServiceImpl implements RatingEnrichmentService {
 
             movieRepository.findById(movieId)
                     .ifPresentOrElse(movie -> {
-                                movie.setRating(ratingDouble);
+                                if (movie.getRating() == null) {
+                                    movie.setRating(ratingDouble);
+                                    logger.info("Rating for movie {} enriched with {}", movieId, ratingDouble);
+                                }
+                                if (movie.getDirector() == null && !director.equalsIgnoreCase("N/A")) {
+                                    movie.setDirector(director);
+                                    logger.info("Director for movie {} enriched with {}", movieId, director);
+                                }
+                                if (movie.getYear() == null && !yearFromResponse.equalsIgnoreCase("N/A")) {
+                                    movie.setYear(Year.parse(yearFromResponse));
+                                    logger.info("Year for movie {} enriched with {}", movieId, yearFromResponse);
+                                }
                                 movieRepository.save(movie);
-                                logger.info("Rating for movie {} enriched with {}", movieId, ratingDouble);
+
                             },
                             () -> logger.warn("Movie {} was deleted before enrichment completed", movieId));
         } catch (RestClientException | NumberFormatException e) {
