@@ -4,7 +4,7 @@ import org.springframework.scheduling.annotation.Async;
 
 import java.time.Year;
 
-public interface RatingEnrichmentService {
+public interface EnrichmentService {
     @Async
-    void enrichRating(int movieId, String title, Year year);
+    void enrichMovie(int movieId, String title, Year year);
 }
