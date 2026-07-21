@@ -7,7 +7,6 @@ import com.example.movielibrary.models.movie.movieDtos.CreateMovieDto;
 import com.example.movielibrary.models.movie.movieDtos.UpdateMovieDto;
 import com.example.movielibrary.repositories.MovieRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,17 +16,17 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
     private final ModelMapper modelMapper;
-    private final RatingEnrichmentService enrichmentService;
+    private final EnrichmentService enrichmentService;
 
     @Autowired
     public MovieServiceImpl(
             MovieRepository movieRepository,
             ModelMapper modelMapper,
-            RatingEnrichmentService ratingEnrichmentService
+            EnrichmentService enrichmentService
     ) {
         this.movieRepository = movieRepository;
         this.modelMapper = modelMapper;
-        this.enrichmentService = ratingEnrichmentService;
+        this.enrichmentService = enrichmentService;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class MovieServiceImpl implements MovieService {
                         savedMovie.getDirector() == null ||
                         savedMovie.getYear() == null
         ) {
-            enrichmentService.enrichRating(savedMovie.getId(), savedMovie.getTitle(), savedMovie.getYear());
+            enrichmentService.enrichMovie(savedMovie.getId(), savedMovie.getTitle(), savedMovie.getYear());
         }
         return savedMovie;
     }

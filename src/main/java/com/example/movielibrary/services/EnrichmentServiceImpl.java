@@ -12,19 +12,19 @@ import org.springframework.web.client.RestClientException;
 import java.time.Year;
 
 @Service
-public class RatingEnrichmentServiceImpl implements RatingEnrichmentService {
-    private static final Logger logger = LoggerFactory.getLogger(RatingEnrichmentServiceImpl.class);
+public class EnrichmentServiceImpl implements EnrichmentService {
+    private static final Logger logger = LoggerFactory.getLogger(EnrichmentServiceImpl.class);
     private final OmdbClient omdbClient;
     private final MovieRepository movieRepository;
 
-    public RatingEnrichmentServiceImpl(OmdbClient omdbClient, MovieRepository movieRepository) {
+    public EnrichmentServiceImpl(OmdbClient omdbClient, MovieRepository movieRepository) {
         this.omdbClient = omdbClient;
         this.movieRepository = movieRepository;
     }
 
     @Async
     @Override
-    public void enrichRating(int movieId, String title, Year year) {
+    public void enrichMovie(int movieId, String title, Year year) {
         try {
             OmdbResponseDto responseDto = omdbClient.findMovie(title, year);
             if (responseDto == null || !responseDto.wasFound()) {
