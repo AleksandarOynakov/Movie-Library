@@ -2,6 +2,7 @@ package com.example.movielibrary.services;
 
 import com.example.movielibrary.exceptions.DuplicateEntityException;
 import com.example.movielibrary.helpers.ModelMapper;
+import com.example.movielibrary.helpers.NullChecker;
 import com.example.movielibrary.models.movie.Movie;
 import com.example.movielibrary.models.movie.movieDtos.CreateMovieDto;
 import com.example.movielibrary.models.movie.movieDtos.UpdateMovieDto;
@@ -16,16 +17,19 @@ import java.util.List;
 public class MovieServiceImpl implements MovieService {
     private final MovieRepository movieRepository;
     private final ModelMapper modelMapper;
+    private final NullChecker nullChecker;
     private final EnrichmentService enrichmentService;
 
     @Autowired
     public MovieServiceImpl(
             MovieRepository movieRepository,
             ModelMapper modelMapper,
+            NullChecker nullChecker,
             EnrichmentService enrichmentService
     ) {
         this.movieRepository = movieRepository;
         this.modelMapper = modelMapper;
+        this.nullChecker = nullChecker;
         this.enrichmentService = enrichmentService;
     }
 
@@ -44,11 +48,7 @@ public class MovieServiceImpl implements MovieService {
         }
 
         Movie savedMovie = movieRepository.save(movie);
-        if (
-                        savedMovie.getRating() == null ||
-                        savedMovie.getDirector() == null ||
-                        savedMovie.getYear() == null
-        ) {
+        if (nullChecker.containsNullValue(savedMovie)) {
             enrichmentService.enrichMovie(savedMovie.getId(), savedMovie.getTitle(), savedMovie.getYear());
         }
         return savedMovie;
@@ -63,7 +63,11 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie update(int id, UpdateMovieDto updateMovieDto) {
         Movie movie = getById(id);
-        return movieRepository.save(modelMapper.fromDtoToObject(movie, updateMovieDto));
+        Movie savedMovie = movieRepository.save(modelMapper.fromDtoToObject(movie, updateMovieDto));
+        if (nullChecker.containsNullValue(movie)) {
+            enrichmentService.enrichMovie(savedMovie.getId(), savedMovie.getTitle(), savedMovie.getYear());
+        }
+        return savedMovie;
     }
 
     @Override
