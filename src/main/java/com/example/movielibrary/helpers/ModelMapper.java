@@ -28,6 +28,11 @@ public class ModelMapper {
     }
 
     public Movie fromDtoToObject(Movie movie, UpdateMovieDto updateMovieDto){
+
+        if(updateMovieDto.getTitle() != null){
+            movie.setTitle(updateMovieDto.getTitle());
+        }
+
         if(updateMovieDto.getDirector() != null){
             movie.setDirector(updateMovieDto.getDirector());
         }
