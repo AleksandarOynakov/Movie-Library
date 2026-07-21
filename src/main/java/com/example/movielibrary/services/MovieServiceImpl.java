@@ -7,6 +7,7 @@ import com.example.movielibrary.models.movie.movieDtos.CreateMovieDto;
 import com.example.movielibrary.models.movie.movieDtos.UpdateMovieDto;
 import com.example.movielibrary.repositories.MovieRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Autowired
     public MovieServiceImpl(
-                            MovieRepository movieRepository,
-                            ModelMapper modelMapper,
-                            RatingEnrichmentService ratingEnrichmentService
+            MovieRepository movieRepository,
+            ModelMapper modelMapper,
+            RatingEnrichmentService ratingEnrichmentService
     ) {
         this.movieRepository = movieRepository;
         this.modelMapper = modelMapper;
@@ -39,12 +40,18 @@ public class MovieServiceImpl implements MovieService {
         Movie movie = modelMapper.fromDtoToObject(createMovieDto);
         String title = movie.getTitle().trim();
 
-        if(movieRepository.existsByTitleIgnoreCase(title)){
+        if (movieRepository.existsByTitleIgnoreCase(title)) {
             throw new DuplicateEntityException(String.format("Movie with title %s already exists!", movie.getTitle()));
         }
 
         Movie savedMovie = movieRepository.save(movie);
-        enrichmentService.enrichRating(savedMovie.getId(),savedMovie.getTitle(),savedMovie.getYear());
+        if (
+                        savedMovie.getRating() == null ||
+                        savedMovie.getDirector() == null ||
+                        savedMovie.getYear() == null
+        ) {
+            enrichmentService.enrichRating(savedMovie.getId(), savedMovie.getTitle(), savedMovie.getYear());
+        }
         return savedMovie;
     }
 
@@ -61,7 +68,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public void delete(int id){
+    public void delete(int id) {
         Movie movie = getById(id);
         movieRepository.delete(movie);
     }
