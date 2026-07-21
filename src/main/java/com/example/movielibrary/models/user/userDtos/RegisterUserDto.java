@@ -4,12 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class RegisterUserDto {
-    @NotBlank
-    @Size(min = 4, max = 20)
+    @NotBlank(message = "Username must not be blank")
+    @Size(min = 4, max = 40, message = "Username must be min 4 and max 40 symbols")
     private String username;
 
-    @NotBlank
-    @Size(min = 4, max = 20)
+    @NotBlank(message = "Password must not be blank")
+    @Size(min = 4, max = 40, message = "Password must be min 4 and max 40 symbols")
     private String password;
 
     public String getUsername() {

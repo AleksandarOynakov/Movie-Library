@@ -6,8 +6,8 @@ import jakarta.validation.constraints.Size;
 import java.time.Year;
 
 public class UpdateMovieDto {
-    @NotBlank
-    @Size(min = 4, max = 40)
+    @NotBlank(message = "Title must not be blank")
+    @Size(min = 4, max = 40, message = "Title must be min 4 and max 40 symbols")
     private String title;
 
     private String director;
