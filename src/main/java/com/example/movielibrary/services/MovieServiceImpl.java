@@ -1,5 +1,6 @@
 package com.example.movielibrary.services;
 
+import com.example.movielibrary.exceptions.DuplicateEntityException;
 import com.example.movielibrary.helpers.ModelMapper;
 import com.example.movielibrary.models.movie.Movie;
 import com.example.movielibrary.models.movie.movieDtos.CreateMovieDto;
@@ -30,6 +31,10 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie create(CreateMovieDto createMovieDto) {
         Movie movie = modelMapper.fromDtoToObject(createMovieDto);
+
+        if(movieRepository.existsByTitleIgnoreCase(movie.getTitle())){
+            throw new DuplicateEntityException(String.format("Movie with title %s already exists!", movie.getTitle()));
+        }
         //Will possible add enrichment here
         return movieRepository.save(movie);
     }
