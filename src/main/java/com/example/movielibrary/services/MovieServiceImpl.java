@@ -42,7 +42,7 @@ public class MovieServiceImpl implements MovieService {
     public Movie create(CreateMovieDto createMovieDto) {
         Movie movie = modelMapper.fromDtoToObject(createMovieDto);
         String title = movie.getTitle().trim();
-
+        movie.setTitle(title);
         if (movieRepository.existsByTitleIgnoreCase(title)) {
             throw new DuplicateEntityException(String.format("Movie with title %s already exists!", movie.getTitle()));
         }
