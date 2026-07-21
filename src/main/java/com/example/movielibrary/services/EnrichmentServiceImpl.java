@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 import java.time.Year;
+import java.time.format.DateTimeParseException;
 
 @Service
 public class EnrichmentServiceImpl implements EnrichmentService {
@@ -28,41 +29,59 @@ public class EnrichmentServiceImpl implements EnrichmentService {
         try {
             OmdbResponseDto responseDto = omdbClient.findMovie(title, year);
             if (responseDto == null || !responseDto.wasFound()) {
-                logger.warn("OMDb didn't find movie with id{} ({}), error: {}", title, year, responseDto.error());
+                logger.warn("OMDb didn't find movie with title {} ({})", title, year);
                 return;
             }
 
-            String rating = responseDto.imdbRating();
-            String director = responseDto.director();
+            String ratingFromResponse = responseDto.imdbRating();
+            String directorFromResponse = responseDto.director();
             String yearFromResponse = responseDto.year();
 
-            if (rating == null || rating.equalsIgnoreCase("N/A")) {
-                logger.warn("OMDb didn't return rating for movie with id{} ({})", title, year);
-                return;
+            if (ratingFromResponse == null || ratingFromResponse.equalsIgnoreCase("N/A")) {
+                logger.warn("OMDb didn't return rating for movie with title {} ({})", title, year);
             }
 
-            double ratingDouble = Double.parseDouble(rating);
+            if (directorFromResponse == null || directorFromResponse.equalsIgnoreCase("N/A")) {
+                logger.warn("OMDb didn't return director for movie with title {} ({})", title, year);
+            }
+
+            if (yearFromResponse == null || yearFromResponse.equalsIgnoreCase("N/A")) {
+                logger.warn("OMDb didn't return year for movie with title {} ({})", title, year);
+            }
 
             movieRepository.findById(movieId)
                     .ifPresentOrElse(movie -> {
-                                if (movie.getRating() == null) {
-                                    movie.setRating(ratingDouble);
-                                    logger.info("Rating for movie with id {} enriched with {}", movieId, ratingDouble);
+
+                                //Set rating
+                                if (movie.getRating() == null &&
+                                        ratingFromResponse != null &&
+                                        !ratingFromResponse.equalsIgnoreCase("N/A")) {
+                                    movie.setRating(Double.parseDouble(ratingFromResponse));
+                                    logger.info("Rating for movie with id {} enriched with {}", movieId, movie.getRating());
                                 }
-                                if (movie.getDirector() == null && !director.equalsIgnoreCase("N/A")) {
-                                    movie.setDirector(director);
-                                    logger.info("Director for movie with id {} enriched with {}", movieId, director);
+
+                                //Set director
+                                if (movie.getDirector() == null &&
+                                        directorFromResponse != null &&
+                                        !directorFromResponse.equalsIgnoreCase("N/A")) {
+                                    movie.setDirector(directorFromResponse);
+                                    logger.info("Director for movie with id {} enriched with {}", movieId, movie.getDirector());
                                 }
-                                if (movie.getYear() == null && !yearFromResponse.equalsIgnoreCase("N/A")) {
+
+                                //Set year
+                                if (movie.getYear() == null &&
+                                        yearFromResponse != null &&
+                                        !yearFromResponse.equalsIgnoreCase("N/A")) {
                                     movie.setYear(Year.parse(yearFromResponse));
-                                    logger.info("Year for movie with id {} enriched with {}", movieId, yearFromResponse);
+                                    logger.info("Year for movie with id {} enriched with {}", movieId, movie.getYear());
                                 }
+
                                 movieRepository.save(movie);
 
                             },
                             () -> logger.warn("Movie with id {} was deleted before enrichment completed", movieId));
-        } catch (RestClientException | NumberFormatException e) {
-            logger.error("Could not enrich rating for movie with id {}: {}", movieId, e.getMessage());
+        } catch (RestClientException | NumberFormatException | DateTimeParseException e) {
+            logger.error("Could not enrich movie with id {}: {}", movieId, e.getMessage());
         }
     }
 }
