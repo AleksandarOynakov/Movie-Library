@@ -28,9 +28,17 @@ public class ModelMapper {
     }
 
     public Movie fromDtoToObject(Movie movie, UpdateMovieDto updateMovieDto){
-        movie.setDirector(updateMovieDto.getDirector());
-        movie.setYear(updateMovieDto.getYear());
-        movie.setRating(updateMovieDto.getRating());
+        if(updateMovieDto.getDirector() != null){
+            movie.setDirector(updateMovieDto.getDirector());
+        }
+
+        if(updateMovieDto.getYear() != null){
+            movie.setYear(updateMovieDto.getYear());
+        }
+
+        if(updateMovieDto.getRating() != null){
+            movie.setRating(updateMovieDto.getRating());
+        }
         return movie;
     }
 }
