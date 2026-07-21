@@ -2,6 +2,7 @@ package com.example.movielibrary.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,13 @@ public class SecurityConfiguration {
                                 "/api/auth/register",
                                 "/api/auth/login"
                         ).permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/movies/**")
+                        .hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers("/api/movies/**")
+                        .hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
 
