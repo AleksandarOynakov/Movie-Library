@@ -64,7 +64,7 @@ public class MovieServiceImpl implements MovieService {
     public Movie update(int id, UpdateMovieDto updateMovieDto) {
         Movie movie = getById(id);
         Movie savedMovie = movieRepository.save(modelMapper.fromDtoToObject(movie, updateMovieDto));
-        if (nullChecker.containsNullValue(movie)) {
+        if (nullChecker.containsNullValue(savedMovie)) {
             enrichmentService.enrichMovie(savedMovie.getId(), savedMovie.getTitle(), savedMovie.getYear());
         }
         return savedMovie;
