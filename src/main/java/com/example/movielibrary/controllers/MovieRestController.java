@@ -37,7 +37,7 @@ public class MovieRestController {
         return movieService.getById(movieId);
     }
 
-    @PatchMapping("/{movieId}")
+    @PutMapping("/{movieId}")
     public Movie update(@PathVariable int movieId, @Valid @RequestBody UpdateMovieDto updateMovieDto){
         return movieService.update(movieId,updateMovieDto);
     }
