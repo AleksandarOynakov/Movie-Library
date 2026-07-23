@@ -46,6 +46,7 @@ public class MovieRestController {
     }
 
     @GetMapping("/{movieId}")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(
             summary = "Get a movie by ID",
             description = "Requires the USER or ADMIN role"
@@ -55,6 +56,7 @@ public class MovieRestController {
     }
 
     @PutMapping("/{movieId}")
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(
             summary = "Update a movie",
             description = "Requires the ADMIN role"
