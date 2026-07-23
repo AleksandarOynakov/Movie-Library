@@ -108,7 +108,7 @@ Authentication is session-based. Registration creates a user with the `USER` rol
 
 | Action | Anonymous | USER | ADMIN |
 |---|:---:|:---:|:---:|
-| Register and log in | Yes | Yes | Yes |
+| Register and login | Yes | Yes | Yes |
 | Read movies | No | Yes | Yes |
 | Create, replace, or delete movies | No | No | Yes |
 
@@ -120,7 +120,7 @@ SET role = 'ADMIN'
 WHERE username = 'admin';
 ```
 
-Log out and log back in after changing the role so the new authority is stored in a fresh session.
+Logout and log back in after changing the role so the new authority is stored in a fresh session.
 
 ## API reference
 
@@ -134,6 +134,10 @@ Log out and log back in after changing the role so the new authority is stored i
 | `POST` | `/api/movies` | ADMIN | Create a movie                    |
 | `PUT` | `/api/movies/{movieId}` | ADMIN | Update a movie                    |
 | `DELETE` | `/api/movies/{movieId}` | ADMIN | Delete a movie                    |
+
+### Swagger
+
+http://localhost:8080/swagger-ui/index.html
 
 ### Register
 
